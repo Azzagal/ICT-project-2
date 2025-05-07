@@ -36,7 +36,39 @@ channel coding}
 \section{Implementation}
 
     \subsection{Question 1}
+        In the implementation for this question, we first define a node class to facilitate the creation and management of the binary tree used in the Huffman coding algorithm.\\
+        
+        \noindent
+        Secondly, iteratively, we sort the nodes based on their probabilities at each iteration, and we merge the two lowest probabilities. This node created
+        by the merge of the two lowest probabilities ones is then added to the tree with a probability equal to the sum of the two lowest probabilities. 
+        The children nodes are the two nodes that were merged. The process is repeated until we have a single node left, which is the root of the tree. \\
 
+        \noindent
+        Tirdly, we generate the codes for each symbol by traversing the tree. We start at the root and assign a '0' code to the left child and a '1' code to
+        the right child. We continue this process recursively until we reach a leaf node, at which point we store the generated code for that symbol.\\
+
+        \noindent
+        Finally, we reorder the symbols to be consistent with the order provided at the input of the function.\\
+
+        \noindent
+        To extend the Huffman code generation to any alphabet size $q$, we can modify the algorithm to merge the q lowest-probabilities
+        nodes at each step and so build a q-ary tree, where each node has up to $q$ children.\\
+        
+        \noindent
+        To implement this with a number of input symbols $n$ and output alphabet size of $q \geq 2$, we can
+        
+        \begin{enumerate}
+            \item Take the $n$ symbols with their probabilities
+            \item Add Dummy Symbols: If $(n-1) \; mod \; (q-1) \neq  0$, add dummy symbols of probability 0 so that:
+            $(n' - 1) \; mod \; (q-1)=0$
+            
+            where n' is the total number of symbols (real + dummy).
+            \item Maintain nodes sorted by probability.  
+            \item Merge q smallest-nodes.
+            \item Repeat until only one node is left.
+            \item Label the edges with 0,1,...,q-1.
+        \end{enumerate}
+        
     \subsection{Question 2}
 
     \subsection{Question 3}
