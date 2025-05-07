@@ -73,6 +73,34 @@ channel coding}
 
     \subsection{Question 3}
 
+    As explained in the theoretical course, the Lempel-Ziv algorithms can be compared on several aspects. These aspects are the dictionary construction,
+    the parsing of the input data, the encoding, the dictionary address size, the adaptivity of the algorithm, the efficiency, and the on-line capability.
+    
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|l|c|l|}
+        \hline
+        \multicolumn{1}{|c|}{Aspect} & \multicolumn{1}{l|}{Basic Lempel-Ziv}                                                                      & On-line Lempel-Ziv                                      \\ \hline
+                                     &                                                                                                            &                                                         \\ \hline
+        Dictionary construction      & Grows incrementally by adding new words                                                                    & Same as basic                                           \\ \hline
+        Parsing                      & Greedy: find the longest prefix in dictionary                                                              & Same as basic                                           \\ \hline
+        Encoding                     & a tuple (address of prefix, next symbol)                                                                   & Same as basic but the address is encoded dynamically    \\ \hline
+        Dictionary address size      & \begin{tabular}[c]{@{}c@{}}Fixed-size = $2^n$ \\ Where n is the number of bits\end{tabular}                & Variable-length based on current dictionary size        \\ \hline
+        Adaptivity                   & No adaptation done based on the dictionary                                                                 & fewer bits used at early stages                         \\ \hline
+        Efficiency                   & Good compression when the dictionary is large                                                              & More efficient in early stages due to shorter addresses \\ \hline
+        On-line capability           & No                                                                                                         & Yes it can transmit as the text is read                 \\ \hline
+        \end{tabular}
+        \end{table}
+
+    \noindent
+    Base on this comparison, we can conclude that the advantages of the basic Lempel-Ziv algorithm are that the compression on large dictionary is 
+    more efficient than the on-line Lempel-Ziv algorithm, and that the dictionary address size is fixed. 
+    The backwards of this version is that it is not adaptive, and it is not on-line.\\
+
+    \noindent
+    The advantages of the on-line Lempel-Ziv algorithm are that it is adaptive, on small and medium dictionary size the efficiency is better due to the shorter addresses, and it is on-line. The backwards of this version is that the compression
+    on large dictionary is less efficient than the basic Lempel-Ziv algorithm, and that the dictionary address size is variable.\\
+
     \subsection{Question 4}
 
 \section{Source coding and reversible (lossless) data compression}
