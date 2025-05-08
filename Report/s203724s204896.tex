@@ -75,22 +75,23 @@ channel coding}
 
     As explained in the theoretical course, the Lempel-Ziv algorithms can be compared on several aspects. These aspects are the dictionary construction,
     the parsing of the input data, the encoding, the dictionary address size, the adaptivity of the algorithm, the efficiency, and the on-line capability.
-    
-    \begin{table}[]
+    See table \ref{tab:basic_vs_online} for a comparison of the two algorithms.\\
+    \begin{table}[ht]
         \centering
-        \begin{tabular}{|l|c|l|}
-        \hline
-        \multicolumn{1}{|c|}{Aspect} & \multicolumn{1}{l|}{Basic Lempel-Ziv}                                                                      & On-line Lempel-Ziv                                      \\ \hline
-                                     &                                                                                                            &                                                         \\ \hline
-        Dictionary construction      & Grows incrementally by adding new words                                                                    & Same as basic                                           \\ \hline
-        Parsing                      & Greedy: find the longest prefix in dictionary                                                              & Same as basic                                           \\ \hline
-        Encoding                     & a tuple (address of prefix, next symbol)                                                                   & Same as basic but the address is encoded dynamically    \\ \hline
-        Dictionary address size      & \begin{tabular}[c]{@{}c@{}}Fixed-size = $2^n$ \\ Where n is the number of bits\end{tabular}                & Variable-length based on current dictionary size        \\ \hline
-        Adaptivity                   & No adaptation done based on the dictionary                                                                 & fewer bits used at early stages                         \\ \hline
-        Efficiency                   & Good compression when the dictionary is large                                                              & More efficient in early stages due to shorter addresses \\ \hline
-        On-line capability           & No                                                                                                         & Yes it can transmit as the text is read                 \\ \hline
+        \setlength{\tabcolsep}{6pt}
+        \begin{tabular}{|p{3cm}|p{5cm}|p{5cm}|}
+            \hline
+            \multicolumn{1}{|c|}{Aspect} & \multicolumn{1}{c|}{Basic Lempel-Ziv} & \multicolumn{1}{c|}{On-line Lempel-Ziv} \\ \hline
+            Dictionary construction      & Grows incrementally by adding new words & Same as basic \\ \hline
+            Parsing                      & Greedy: find the longest prefix in dictionary & Same as basic \\ \hline
+            Encoding                     & Tuple (address of prefix, next symbol) & Same as basic but address is encoded dynamically \\ \hline
+            Dictionary address size      & Fixed-size = $2^n$\newline (where n is number of bits) & Variable-length based on current dictionary size \\ \hline
+            Adaptivity                   & No adaptation based on dictionary & Fewer bits used at early stages \\ \hline
+            Efficiency                   & Good compression with large dictionary & More efficient in early stages due to shorter addresses \\ \hline
+            On-line capability           & No & Yes, can transmit as text is read \\ \hline
         \end{tabular}
-        \end{table}
+        \caption{Comparison of Basic Lempel-Ziv and On-line Lempel-Ziv}\label{tab:basic_vs_online}
+    \end{table}
 
     \noindent
     Base on this comparison, we can conclude that the advantages of the basic Lempel-Ziv algorithm are that the compression on large dictionary is 
@@ -102,6 +103,52 @@ channel coding}
     on large dictionary is less efficient than the basic Lempel-Ziv algorithm, and that the dictionary address size is variable.\\
 
     \subsection{Question 4}
+
+    To decode a LZ77 encoded text, we need first to reset the basis. The encoded text is a 
+    sequence of triples (Offset, Length, NextChar). 
+    To decode a full sequence of triple, the same logic is applied to each triple in the sequence.\\
+
+    \noindent
+    Firstly, \textbf{if the offset is 0 and the length is 0}, then the next
+    character can be appended to the output string.\\
+
+    \noindent
+    Secondly, \textbf{if the offset is not 0 and the length is not 0}, then we 
+    need to move back by the specified offset in the output string and copy 
+    the specified length of characters from the output string to the output string.
+    After that we can add the next character to the output string.\\
+
+    \noindent
+    This process is repeated until we have decoded the entire sequence of triples.\\
+
+    \noindent
+    \textbf{Example:}\\
+    \noindent
+    If the encoded text is (0, 0, 'a'),
+    (0, 0, 'b'),
+    (0, 0, 'r'),
+    (3, 1, 'c'),
+    (5, 1, 'd'),
+    (7, 4, 'd'). The decoding algorithm will run like seen in the table \ref{tab:decoding}: 
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|c|c|}
+        \hline
+        Triple      & Current output string & Afterwards output string \\ \hline
+        (0, 0, 'a') & " "                   & "a"                      \\ \hline
+        (0, 0, 'b') & "a"                   & "ab"                     \\ \hline
+        (0, 0, 'r') & "ab"                  & "abr"                    \\ \hline
+        (3, 1, 'c') & "\color{blue}{a}\color{black}{br}"                 & "abr\color{blue}{a}\color{black}c"                  \\ \hline
+        (5, 1, 'd') & "\color{blue}{a}\color{black}brac"               & "abrac\color{blue}{a}\color{black}d"                \\ \hline
+        (7, 4, 'd') & "\color{blue}abra\color{black}cad"             & "abracad\color{blue}abra\color{black}d"           \\ \hline
+        \end{tabular}
+        \caption{Decoding of the encoded text}\label{tab:decoding}
+    \end{table}
+
+
+
+    
 
 \section{Source coding and reversible (lossless) data compression}
 
