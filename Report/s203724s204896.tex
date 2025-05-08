@@ -190,6 +190,28 @@ channel coding}
 
     \subsection{Question 6}
 
+    The average length for our Huffman code is $4.10328$ bits. 
+
+    Let's compare this value with the empirical average length. 4.10328\\
+
+
+    \noindent
+    The theoretical bounds of a Huffman code are related to how closely its average codeword 
+    length approximates the entropy of the source.
+    \[
+        \frac{H(S)}{log \; q} \leq \overline{n} < \frac{H(S)}{log \; q} + 1 
+    \]
+
+    \noindent
+    By knowing that the entropy in this case is \[H(S) = 4.06223\] and 
+    $q = 27$, we can calculate the bounds of the average codeword length.
+    \[
+        \frac{4.06223}{log \; 27} \leq \overline{n} < \frac{4.06223}{log \; 27} + 1 
+    \]
+    \[
+        2.838013719 \leq \overline{n} < 3.838013719 
+    \]
+
     \subsection{Question 7}
 
     \subsection{Question 8}
