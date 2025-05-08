@@ -71,10 +71,43 @@ channel coding}
         
     \subsection{Question 2}
 
+    Initially, the dictionary is established with an empty string mapped to index 0. 
+    The algorithm then iterates through each character of the input sequence, progressively building phrases.
+    For each iteration, it combines the current phrase with the next character from the input to form 
+    a new candidate phrase. 
+    If this new phrase is not already present in the dictionary, the algorithm performs two operations:
+
+    \begin{itemize}
+        \item It appends a tuple containing the index of the current phrase (as found in the dictionary) 
+            and the character that triggered the creation of the new phrase to the encoded\_sequence.
+        \item It then adds the new phrase to the dictionary with a unique incremental index.
+    \end{itemize}
+
+    \noindent
+    The current phrase is reset after each dictionary insertion, allowing the process to restart and 
+    construct new phrases from subsequent characters. If the new phrase is already present in the dictionary,
+    the algorithm continues extending it until it encounters a unique phrase.\\
+
+    \noindent
+    After processing the entire sequence, any remaining unprocessed phrase is handled explicitly 
+    by adding a final tuple to the encoded sequence.\\
+
+    \noindent
+    Applying this algorithm to the given example sequence "ababcbababaaaaaaa", results in constructing 
+    a dictionary that maps substrings to indices, and produces an encoded sequence consisting of tuples 
+    representing dictionary indices paired with subsequent characters.\\
+
+    \noindent
+    This approach effectively exploits repeating patterns within data, significantly reducing the 
+    size required for storage or transmission, making it a practical and efficient method in data 
+    compression scenarios.
+
     \subsection{Question 3}
 
-    As explained in the theoretical course, the Lempel-Ziv algorithms can be compared on several aspects. These aspects are the dictionary construction,
-    the parsing of the input data, the encoding, the dictionary address size, the adaptivity of the algorithm, the efficiency, and the on-line capability.
+    As explained in the theoretical course, the Lempel-Ziv algorithms can be compared on several aspects. 
+    These aspects are the dictionary construction, the parsing of the input data, 
+    the encoding, the dictionary address size, the adaptivity of the algorithm, 
+    the efficiency, and the on-line capability.
     See table \ref{tab:basic_vs_online} for a comparison of the two algorithms.\\
     \begin{table}[ht]
         \centering
