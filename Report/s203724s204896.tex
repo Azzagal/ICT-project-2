@@ -190,29 +190,57 @@ channel coding}
 
     \subsection{Question 6}
 
-    The average length for our Huffman code is $4.10328$ bits. 
+    The average length for our Huffman code is $4.10328$ bits. \\
 
-    Let's compare this value with the empirical average length. 4.10328\\
+    \noindent
+    Let's compare this value with the empirical average length.
+    We can see that the empirical average length is $4.10328$. So,\\
+    \[
+        empirical_{avg} = 4.10328 = expected_{avg}
+    \]
 
 
     \noindent
     The theoretical bounds of a Huffman code are related to how closely its average codeword 
     length approximates the entropy of the source.
     \[
-        \frac{H(S)}{log \; q} \leq \overline{n} < \frac{H(S)}{log \; q} + 1 
+        \frac{H(S)}{\log \; q} \leq \overline{n} < \frac{H(S)}{\log \; q} + 1 
     \]
 
     \noindent
+    This means that the probabilities used to build the Huffman code match exactly the observed frequencies in the text.
+    That was expected because the Huffman code is built based on the frequencies of the symbols in the text.
+    This means that our algorithm works well.
+
+    \noindent
     By knowing that the entropy in this case is \[H(S) = 4.06223\] and 
-    $q = 27$, we can calculate the bounds of the average codeword length.
-    \[
-        \frac{4.06223}{log \; 27} \leq \overline{n} < \frac{4.06223}{log \; 27} + 1 
-    \]
-    \[
-        2.838013719 \leq \overline{n} < 3.838013719 
-    \]
+    with $q = 2$ because the size of the alphabet is 2 (the Huffman tree is a binary tree), we can calculate the bounds of the average codeword length:
+    \begin{align*}
+        \frac{4.06223}{\log 2} &\leq \overline{n} < \frac{4.06223}{\log 2} + 1 \\
+        4.06223 &\leq \overline{n} < 5.06223
+    \end{align*}
+    
+    \noindent
+    We can see that the expected average length is $4.10328$ which is between the bounds $4.06223$ and $5.06223$.
+    The value of the expected average length tells us that the Huffman code is near-optimal.
 
     \subsection{Question 7}
+
+    The empirical average code length evolution with text length is shown in the figure 
+    \ref{fig:evolution_avg_code_length}.\\
+    
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=1\textwidth]{Images/evolution_avg_code_length.png}
+        \caption{Empirical average code length evolution with text length}
+        \label{fig:evolution_avg_code_length}
+    \end{figure}
+
+    \noindent
+    We can see that the empirical average code length is decreasing with the text length.
+    This means that the Huffman code is getting better as the text length is increasing.
+    We can also see that the empirical average code length is growing exponentially until we reach the 10,000 characters.
+    This demonstrates that the Huffman code is not optimal for short texts.
 
     \subsection{Question 8}
 
