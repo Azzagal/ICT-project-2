@@ -311,9 +311,92 @@ channel coding}
 
     \subsection{Question 12}
 
+    For the given English text, the LZ78 algorithm produced a total encoded size of \textbf{233,396 bits}, 
+    resulting in a \textbf{compression rate} of approximately \textbf{1.997}. 
+    This serves as a baseline for evaluating the more advanced hybrid techniques.\\
+
+    \noindent
+    By contrast, the LZ77 algorithm alone, using a sliding window of 10,001 characters, 
+    achieved a much smaller encoded size of \textbf{101,651 bits}, corresponding to a \textbf{compression rate} of \textbf{4.584} (as shown in Table \ref{tab:lz77}). 
+    Furthermore, when LZ77 was combined with Huffman coding, the performance improved even further.
+    This hybrid method resulted in a total encoded length of \textbf{96,308 bits} and a \textbf{compression rate} of \textbf{4.839} (see Table \ref{tab:lz77_huffman}).\\
+
+    \noindent
+    These results highlight a substantial improvement in compression when employing a two-stage approach 
+    that first eliminates redundancy via LZ77 and then compresses the remaining symbols based on their frequency. 
+    Compared to LZ78, the hybrid LZ77-Huffman method reduced the total bit length by over 58\% and more than doubled the compression rate.\\
+
+    \noindent
+    In summary, while the LZ78 algorithm is advantageous for its simplicity and real-time capabilities, 
+    it is significantly outperformed by LZ77-based methods, particularly when augmented with Huffman coding, 
+    in terms of both compression efficiency and encoded size. This demonstrates the value of combining 
+    dictionary-based and statistical compression techniques to better exploit the structure and redundancy 
+    present in natural language text.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|c|c|}
+            \hline
+            Window size & Total length & Compression rate \\ \hline
+            1 & 628,859 & 0.7410 \\ \hline
+            1,001 & 145,541 & 3.2017 \\ \hline
+            2,001 & 131,120 & 3.5539 \\ \hline
+            3,001 & 123,442 & 3.7749 \\ \hline
+            4,001 & 118,492 & 3.9326 \\ \hline
+            5,001 & 115,379 & 4.0387 \\ \hline
+            6,001 & 112,288 & 4.1499 \\ \hline
+            7,001 & 109,978 & 4.2371 \\ \hline
+            8,001 & 104,027 & 4.4795 \\ \hline
+            9,001 & 102,806 & 4.5327 \\ \hline
+            10,001 & 101,651 & 4.5842 \\ \hline
+        \end{tabular}
+        \caption{ Total length and compression rates using the LZ77 with different sliding windows}
+        \label{tab:lz77}
+    \end{table}
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|c|c|}
+            \hline
+            Window size & Total length & Compression rate \\ \hline
+            1 & 577,270 & 0.8072 \\ \hline
+            1,001 & 138,265 & 3.3702 \\ \hline
+            2,001 & 124,451 & 3.7443 \\ \hline
+            3,001 & 117,101 & 3.9793 \\ \hline
+            4,001 & 112,377 & 4.1466 \\ \hline
+            5,001 & 109,376 & 4.2604 \\ \hline
+            6,001 & 106,419 & 4.3788 \\ \hline
+            7,001 & 104,243 & 4.4702 \\ \hline
+            8,001 & 98,641 & 4.7240 \\ \hline
+            9,001 & 97,449 & 4.7818 \\ \hline
+            10,001 & 96,308 & 4.8385 \\ \hline
+        \end{tabular}
+        \caption{ Total length and compression rates using the LZ77 and Huffman with different sliding windows}
+        \label{tab:lz77_huffman}
+    \end{table}
+
     \subsection{Question 13}
 
+    Based on the results obtained in Question 12, the best-performing compression algorithm was the combination of LZ77 with Huffman coding applied to the next\_char field. 
+    This method effectively reduces redundancy at two levels: structural repetition through LZ77, and symbol frequency through Huffman coding. 
+    As the sliding window size increases, LZ77 is able to capture more long-distance repetitions, significantly improving compression rates. 
+    In contrast, LZ78 performs reasonably well, but does not match the efficiency of LZ77 with large windows, as it lacks a mechanism to look back over long ranges. 
+    This confirms that the most effective data compression approach in this context is one that combines dictionary-based matching with entropy coding, particularly when applied to large, repetitive datasets.    
+
     \subsection{Question 14}
+
+    The results of the encoded encrypted text using the binary Huffman algorithm and the LZ77 algorithm 
+    can be found in the table \ref{tab:binary_huffman_lz77}.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|c|c|}
+        \hline
+        Algorithm        & LZ77               & Binary Huffman algorithm \\ \hline
+        Compression rate & 0.9231848196260775 & 1.6980129651020848       \\ \hline
+        \end{tabular}
+        \caption{Compression rate using the binary Huffman algorithm and the LZ77 algorithm}\label{tab:binary_huffman_lz77}
+    \end{table}
 
     \subsection{Question 15}
 
