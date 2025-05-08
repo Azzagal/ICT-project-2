@@ -244,11 +244,70 @@ channel coding}
 
     \subsection{Question 8}
 
+    The total encoded text length is $233396$ bits and the compression rate is $1.9965380726319217$ using the
+    on-line Lempel-Ziv algorithm.
+
     \subsection{Question 9}
+
+    The total encoded text length is $441364$ bits and the compression rate is $1.0557816224250278$ using the
+    LZ77 algorithm with a window size of 7 characters.
 
     \subsection{Question 10}
 
+    One straightforward method for combining LZ77 and Huffman coding involves a two-stage process. 
+    First, the input text is compressed using the LZ77 algorithm, which outputs a sequence of triplets 
+    in the form (offset, length, next\_char). In the second stage, Huffman coding is applied exclusively 
+    to the next\_char symbols extracted from these triplets. 
+    This approach is relatively simple to implement and captures the redundancy in literal symbols effectively. 
+    However, it does not compress the metadata components (offset and length), which are typically stored 
+    using a fixed number of bits. As a result, the overall compression performance may be suboptimal, 
+    especially in cases where the metadata forms a significant portion of the encoded data.\\
+
+    \noindent
+    A more sophisticated and efficient technique involves applying Huffman coding separately to each component of the LZ77 triplets (the offset, length, and next\_char). 
+    Each component is treated as a distinct symbol stream, and frequency-based Huffman coding is used to encode each stream independently. 
+    This method leverages the statistical properties of all parts of the compressed output, resulting in significantly improved compression ratios, 
+    particularly for highly repetitive input data where certain offsets and lengths occur more frequently.\\
+
+    \noindent
+    This strategy is employed in real-world compression standards such as DEFLATE (used in formats like ZIP and PNG), 
+    where additional optimization techniques such as dynamic block-based Huffman trees are also incorporated. 
+    While this approach yields better compression, it comes at the cost of increased computational complexity and memory usage, 
+    as separate Huffman trees must be built, stored, and transmitted for each component of the LZ77 output.
+
     \subsection{Question 11}
+
+    In our implementation, we choose the first proposition to combine the LZ77 and Huffman coding techniques. 
+    The LZ77 algorithm was first used to parse the input text into a sequence of triplets, 
+    each of the form (offset, length, next\_char), where \textit{offset} and \textit{length} refer to a match 
+    in a sliding window of size 7. 
+    Given the maximum window size, both the offset and length components were stored using 
+    fixed-length 3-bit binary values, which are sufficient to represent values up to 7.\\
+
+    \noindent
+    To enhance compression efficiency, we applied Huffman coding to the next\_char component of each triplet. 
+    A Huffman codebook was constructed based on the empirical frequency distribution of these literal characters 
+    across the entire LZ77 output. This allowed us to exploit not only the redundancy in repeated substrings (via LZ77), 
+    but also the unequal probabilities of individual characters (via Huffman coding), resulting in a more compact representation of the data.\\
+
+    \noindent
+    The total number of bits required for encoding was calculated as the sum of:
+
+    \begin{itemize}
+        \item The fixed-size metadata for each triplet (6 bits per triplet: 3 bits for offset, 3 bits for length),
+        \item The Huffman-encoded bits corresponding to each next\_char.
+    \end{itemize}
+
+    \noindent
+    The resulting compression rate, measured as the ratio of the original uncompressed size (in bits) 
+    to the total compressed size, was approximately 1.122731270103242. 
+    This indicates a meaningful improvement over using LZ77 alone, which does not compress the literal 
+    characters, and confirms the benefit of combining dictionary-based and statistical coding methods.
+
+    \begin{itemize}
+        \item \underline{Total encoded text length}: $415045$ bits
+        \item \underline{Compression rate}: $1.122731270103242$
+    \end{itemize}
 
     \subsection{Question 12}
 
