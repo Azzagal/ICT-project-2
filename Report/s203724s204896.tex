@@ -232,8 +232,7 @@ channel coding}
     \begin{figure}[ht]
         \centering
         \includegraphics[width=1\textwidth]{Images/evolution_avg_code_length.png}
-        \caption{Empirical average code length evolution with text length}
-        \label{fig:evolution_avg_code_length}
+        \caption{Empirical average code length evolution with text length}\label{fig:evolution_avg_code_length}
     \end{figure}
 
     \noindent
@@ -350,8 +349,7 @@ channel coding}
             9,001 & 102,806 & 4.5327 \\ \hline
             10,001 & 101,651 & 4.5842 \\ \hline
         \end{tabular}
-        \caption{ Total length and compression rates using the LZ77 with different sliding windows}
-        \label{tab:lz77}
+        \caption{ Total length and compression rates using the LZ77 with different sliding windows}\label{tab:lz77}
     \end{table}
 
     \begin{table}[ht]
@@ -371,8 +369,7 @@ channel coding}
             9,001 & 97,449 & 4.7818 \\ \hline
             10,001 & 96,308 & 4.8385 \\ \hline
         \end{tabular}
-        \caption{ Total length and compression rates using the LZ77 and Huffman with different sliding windows}
-        \label{tab:lz77_huffman}
+        \caption{ Total length and compression rates using the LZ77 and Huffman with different sliding windows}\label{tab:lz77_huffman}
     \end{table}
 
     \subsection{Question 13}
@@ -386,7 +383,7 @@ channel coding}
     \subsection{Question 14}
 
     The results of the encoded encrypted text using the binary Huffman algorithm and the LZ77 algorithm 
-    can be found in the table \ref{tab:binary_huffman_lz77}.
+    can be found in the table \ref{tab:binary_huffman_lz77}.\\
 
     \begin{table}[ht]
         \centering
@@ -398,19 +395,126 @@ channel coding}
         \caption{Compression rate using the binary Huffman algorithm and the LZ77 algorithm}\label{tab:binary_huffman_lz77}
     \end{table}
 
+    \noindent
+    We can see that the binary Huffman algorithm is nearly twice better than the 
+    LZ77 algorithm.\\
+
     \subsection{Question 15}
 
+    The compression rates obtained on the encrypted text using the \textbf{LZ77} and 
+    \textbf{binary Huffman} algorithms were \textbf{0.923} and \textbf{1.698}, 
+    respectively (see Table~\ref{tab:binary_huffman_lz77}). 
+    In contrast, substantially higher compression rates were achieved when the same algorithms 
+    were applied to unencrypted English text. 
+    Specifically, in Question~5, the binary Huffman algorithm achieved a compression rate of 
+    \textbf{1.950}, while in Question~9, LZ77 achieved a rate of \textbf{1.056}.\\
+
+    \noindent
+    This difference can be attributed to the statistical properties of encrypted versus natural 
+    language data. Strong encryption algorithms are designed to maximize the entropy of the output, 
+    making the ciphertext statistically resemble random noise. In such data, characters are distributed 
+    nearly uniformly, and structural patterns are intentionally removed. This directly undermines the 
+    assumptions that dictionary-based (LZ77) and statistical (Huffman) compression algorithms rely on
+    the presence of repeated substrings and non-uniform symbol frequencies.\\
+
+    \noindent
+    The \textbf{encryption key} plays a crucial role in shaping the compressibility of the encrypted output. 
+    Several intuitive factors are worth noting:
+
+    \begin{itemize}
+        \item \textbf{Key size:} Larger keys increase the entropy of the encryption process, further randomizing the output and eliminating predictable patterns.
+        \item \textbf{Key complexity:} Keys containing a broader variety of characters and a less predictable structure (e.g., random keys versus fixed templates) result in ciphertexts with more uniform character distributions, making Huffman coding less effective.
+        \item \textbf{Encryption strength:} As the encryption method becomes more secure (e.g., adopting stronger substitution-permutation structures), even small statistical hints are suppressed, leaving virtually no redundancy for compression algorithms to exploit.
+    \end{itemize}
+
     \subsection{Question 16}
+
+    If Alice wants to send the more compressed private message to Bob, 
+    she should compress it before the encryption is made. The encryption will suppress
+    the redundancy in the message, making it less compressible.
 
 \section{Channel coding}
 
     \subsection{Question 17}
 
+    Here is the image generated (see figure \ref{fig:image}): 
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{Images/image.png}
+        \caption{Image generated}\label{fig:image}
+    \end{figure}
+
     \subsection{Question 18}
+
+    In order to encode a grayscale image using a fixed-length binary code,
+    we must determine the minimum number of bits required to represent all possible 
+    pixel intensity values.\\
+
+    \noindent
+    A grayscale image typically represent pixel intensities as integer values 
+    ranging from:
+    \begin{align*}
+        \text{Minimum } 0 \text{ to Maximum } 255
+    \end{align*}
+
+    \noindent
+    So there is 256 distinct values.\\
+
+    \noindent
+    To represent 256 distinct values in binary, we must choose the smallest integer $b$ such that:
+    \begin{align*}
+        2^b \geq 256
+    \end{align*}
+
+    \noindent
+    Solving this gives:
+    \begin{align*}
+        b = \lceil \log_2(256) \rceil = \lceil 8 \rceil = 8 \text{ bits}
+    \end{align*}
+
+    \noindent
+    This matches the required range [0,255] perfectly. 
+    Any representation using fewer than 8 bits (e.g., 7 bits → 128 values) 
+    would be insufficient to encode the full grayscale spectrum, leading to 
+    a loss of information and reduced image quality.
 
     \subsection{Question 19}
 
+    In our simulation, we modeled the transmission of a grayscale image through a noisy channel 
+    using a Binary Symmetric Channel (BSC) with a crossover probability $p=0.01$. 
+    This means that each bit of the transmitted image has a 1\% chance of being flipped 
+    (from 0 to 1 or vice versa) independently of the others.\\
+
+    \noindent
+    The resulting image (see figure \ref{fig:image_bsc}), after transmission through the BSC, exhibits noticeable noise artifacts:
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.4\textwidth]{Images/image.png}
+        \includegraphics[width=0.5\textwidth]{Images/image_bsc.png} 
+        \caption{Image after transmission through the BSC}\label{fig:image_bsc}
+    \end{figure}
+
+    \noindent
+    The noise introduced by the channel manifests as random speckling and abrupt variations in pixel intensity across the image. 
+    As a result, edges become less defined and fine structural details are partially lost or distorted. 
+    Overall, the image exhibits a noticeable reduction in clarity and visual fidelity when compared to the original.
+
     \subsection{Question 20}
+
+    The resulting image after adding some redundancy and passing through the BSC is shown in figure \ref{fig:image_bsc_redundancy}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.4\textwidth]{Images/image.png}
+        \includegraphics[width=0.5\textwidth]{Images/image_bsc_redundancy.png} 
+        \caption{Image after adding some redundancy and passing through the BSC}\label{fig:image_bsc_redundancy}
+    \end{figure}
+
+    \noindent
+    The noise noticed in this image is less visible than for the previous image.
+    This improvement is due to the Hamming code's ability to identify and correct 
+    single-bit errors, which are the most likely type of corruption under the given channel conditions. 
+    Although this approach increases the data size by a factor of $\frac{7}{4}$, the trade-off is 
+    justified by the substantial gain in visual quality and robustness.  
 
     \subsection{Question 21}
 
