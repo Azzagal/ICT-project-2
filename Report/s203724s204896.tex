@@ -232,8 +232,7 @@ channel coding}
     \begin{figure}[ht]
         \centering
         \includegraphics[width=1\textwidth]{Images/evolution_avg_code_length.png}
-        \caption{Empirical average code length evolution with text length}
-        \label{fig:evolution_avg_code_length}
+        \caption{Empirical average code length evolution with text length}\label{fig:evolution_avg_code_length}
     \end{figure}
 
     \noindent
@@ -244,31 +243,278 @@ channel coding}
 
     \subsection{Question 8}
 
+    The total encoded text length is $233396$ bits and the compression rate is $1.9965380726319217$ using the
+    on-line Lempel-Ziv algorithm.
+
     \subsection{Question 9}
+
+    The total encoded text length is $441364$ bits and the compression rate is $1.0557816224250278$ using the
+    LZ77 algorithm with a window size of 7 characters.
 
     \subsection{Question 10}
 
+    One straightforward method for combining LZ77 and Huffman coding involves a two-stage process. 
+    First, the input text is compressed using the LZ77 algorithm, which outputs a sequence of triplets 
+    in the form (offset, length, next\_char). In the second stage, Huffman coding is applied exclusively 
+    to the next\_char symbols extracted from these triplets. 
+    This approach is relatively simple to implement and captures the redundancy in literal symbols effectively. 
+    However, it does not compress the metadata components (offset and length), which are typically stored 
+    using a fixed number of bits. As a result, the overall compression performance may be suboptimal, 
+    especially in cases where the metadata forms a significant portion of the encoded data.\\
+
+    \noindent
+    A more sophisticated and efficient technique involves applying Huffman coding separately to each component of the LZ77 triplets (the offset, length, and next\_char). 
+    Each component is treated as a distinct symbol stream, and frequency-based Huffman coding is used to encode each stream independently. 
+    This method leverages the statistical properties of all parts of the compressed output, resulting in significantly improved compression ratios, 
+    particularly for highly repetitive input data where certain offsets and lengths occur more frequently.\\
+
+    \noindent
+    This strategy is employed in real-world compression standards such as DEFLATE (used in formats like ZIP and PNG), 
+    where additional optimization techniques such as dynamic block-based Huffman trees are also incorporated. 
+    While this approach yields better compression, it comes at the cost of increased computational complexity and memory usage, 
+    as separate Huffman trees must be built, stored, and transmitted for each component of the LZ77 output.
+
     \subsection{Question 11}
+
+    In our implementation, we choose the first proposition to combine the LZ77 and Huffman coding techniques. 
+    The LZ77 algorithm was first used to parse the input text into a sequence of triplets, 
+    each of the form (offset, length, next\_char), where \textit{offset} and \textit{length} refer to a match 
+    in a sliding window of size 7. 
+    Given the maximum window size, both the offset and length components were stored using 
+    fixed-length 3-bit binary values, which are sufficient to represent values up to 7.\\
+
+    \noindent
+    To enhance compression efficiency, we applied Huffman coding to the next\_char component of each triplet. 
+    A Huffman codebook was constructed based on the empirical frequency distribution of these literal characters 
+    across the entire LZ77 output. This allowed us to exploit not only the redundancy in repeated substrings (via LZ77), 
+    but also the unequal probabilities of individual characters (via Huffman coding), resulting in a more compact representation of the data.\\
+
+    \noindent
+    The total number of bits required for encoding was calculated as the sum of:
+
+    \begin{itemize}
+        \item The fixed-size metadata for each triplet (6 bits per triplet: 3 bits for offset, 3 bits for length),
+        \item The Huffman-encoded bits corresponding to each next\_char.
+    \end{itemize}
+
+    \noindent
+    The resulting compression rate, measured as the ratio of the original uncompressed size (in bits) 
+    to the total compressed size, was approximately 1.122731270103242. 
+    This indicates a meaningful improvement over using LZ77 alone, which does not compress the literal 
+    characters, and confirms the benefit of combining dictionary-based and statistical coding methods.
+
+    \begin{itemize}
+        \item \underline{Total encoded text length}: $415045$ bits
+        \item \underline{Compression rate}: $1.122731270103242$
+    \end{itemize}
 
     \subsection{Question 12}
 
+    For the given English text, the LZ78 algorithm produced a total encoded size of \textbf{233,396 bits}, 
+    resulting in a \textbf{compression rate} of approximately \textbf{1.997}. 
+    This serves as a baseline for evaluating the more advanced hybrid techniques.\\
+
+    \noindent
+    By contrast, the LZ77 algorithm alone, using a sliding window of 10,001 characters, 
+    achieved a much smaller encoded size of \textbf{101,651 bits}, corresponding to a \textbf{compression rate} of \textbf{4.584} (as shown in Table \ref{tab:lz77}). 
+    Furthermore, when LZ77 was combined with Huffman coding, the performance improved even further.
+    This hybrid method resulted in a total encoded length of \textbf{96,308 bits} and a \textbf{compression rate} of \textbf{4.839} (see Table \ref{tab:lz77_huffman}).\\
+
+    \noindent
+    These results highlight a substantial improvement in compression when employing a two-stage approach 
+    that first eliminates redundancy via LZ77 and then compresses the remaining symbols based on their frequency. 
+    Compared to LZ78, the hybrid LZ77-Huffman method reduced the total bit length by over 58\% and more than doubled the compression rate.\\
+
+    \noindent
+    In summary, while the LZ78 algorithm is advantageous for its simplicity and real-time capabilities, 
+    it is significantly outperformed by LZ77-based methods, particularly when augmented with Huffman coding, 
+    in terms of both compression efficiency and encoded size. This demonstrates the value of combining 
+    dictionary-based and statistical compression techniques to better exploit the structure and redundancy 
+    present in natural language text.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|c|c|}
+            \hline
+            Window size & Total length & Compression rate \\ \hline
+            1 & 628,859 & 0.7410 \\ \hline
+            1,001 & 145,541 & 3.2017 \\ \hline
+            2,001 & 131,120 & 3.5539 \\ \hline
+            3,001 & 123,442 & 3.7749 \\ \hline
+            4,001 & 118,492 & 3.9326 \\ \hline
+            5,001 & 115,379 & 4.0387 \\ \hline
+            6,001 & 112,288 & 4.1499 \\ \hline
+            7,001 & 109,978 & 4.2371 \\ \hline
+            8,001 & 104,027 & 4.4795 \\ \hline
+            9,001 & 102,806 & 4.5327 \\ \hline
+            10,001 & 101,651 & 4.5842 \\ \hline
+        \end{tabular}
+        \caption{ Total length and compression rates using the LZ77 with different sliding windows}\label{tab:lz77}
+    \end{table}
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|c|c|}
+            \hline
+            Window size & Total length & Compression rate \\ \hline
+            1 & 577,270 & 0.8072 \\ \hline
+            1,001 & 138,265 & 3.3702 \\ \hline
+            2,001 & 124,451 & 3.7443 \\ \hline
+            3,001 & 117,101 & 3.9793 \\ \hline
+            4,001 & 112,377 & 4.1466 \\ \hline
+            5,001 & 109,376 & 4.2604 \\ \hline
+            6,001 & 106,419 & 4.3788 \\ \hline
+            7,001 & 104,243 & 4.4702 \\ \hline
+            8,001 & 98,641 & 4.7240 \\ \hline
+            9,001 & 97,449 & 4.7818 \\ \hline
+            10,001 & 96,308 & 4.8385 \\ \hline
+        \end{tabular}
+        \caption{ Total length and compression rates using the LZ77 and Huffman with different sliding windows}\label{tab:lz77_huffman}
+    \end{table}
+
     \subsection{Question 13}
+
+    Based on the results obtained in Question 12, the best-performing compression algorithm was the combination of LZ77 with Huffman coding applied to the next\_char field. 
+    This method effectively reduces redundancy at two levels: structural repetition through LZ77, and symbol frequency through Huffman coding. 
+    As the sliding window size increases, LZ77 is able to capture more long-distance repetitions, significantly improving compression rates. 
+    In contrast, LZ78 performs reasonably well, but does not match the efficiency of LZ77 with large windows, as it lacks a mechanism to look back over long ranges. 
+    This confirms that the most effective data compression approach in this context is one that combines dictionary-based matching with entropy coding, particularly when applied to large, repetitive datasets.    
 
     \subsection{Question 14}
 
+    The results of the encoded encrypted text using the binary Huffman algorithm and the LZ77 algorithm 
+    can be found in the table \ref{tab:binary_huffman_lz77}.\\
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|c|c|}
+        \hline
+        Algorithm        & LZ77               & Binary Huffman algorithm \\ \hline
+        Compression rate & 0.9231848196260775 & 1.6980129651020848       \\ \hline
+        \end{tabular}
+        \caption{Compression rate using the binary Huffman algorithm and the LZ77 algorithm}\label{tab:binary_huffman_lz77}
+    \end{table}
+
+    \noindent
+    We can see that the binary Huffman algorithm is nearly twice better than the 
+    LZ77 algorithm.\\
+
     \subsection{Question 15}
 
+    The compression rates obtained on the encrypted text using the \textbf{LZ77} and 
+    \textbf{binary Huffman} algorithms were \textbf{0.923} and \textbf{1.698}, 
+    respectively (see Table~\ref{tab:binary_huffman_lz77}). 
+    In contrast, substantially higher compression rates were achieved when the same algorithms 
+    were applied to unencrypted English text. 
+    Specifically, in Question~5, the binary Huffman algorithm achieved a compression rate of 
+    \textbf{1.950}, while in Question~9, LZ77 achieved a rate of \textbf{1.056}.\\
+
+    \noindent
+    This difference can be attributed to the statistical properties of encrypted versus natural 
+    language data. Strong encryption algorithms are designed to maximize the entropy of the output, 
+    making the ciphertext statistically resemble random noise. In such data, characters are distributed 
+    nearly uniformly, and structural patterns are intentionally removed. This directly undermines the 
+    assumptions that dictionary-based (LZ77) and statistical (Huffman) compression algorithms rely on
+    the presence of repeated substrings and non-uniform symbol frequencies.\\
+
+    \noindent
+    The \textbf{encryption key} plays a crucial role in shaping the compressibility of the encrypted output. 
+    Several intuitive factors are worth noting:
+
+    \begin{itemize}
+        \item \textbf{Key size:} Larger keys increase the entropy of the encryption process, further randomizing the output and eliminating predictable patterns.
+        \item \textbf{Key complexity:} Keys containing a broader variety of characters and a less predictable structure (e.g., random keys versus fixed templates) result in ciphertexts with more uniform character distributions, making Huffman coding less effective.
+        \item \textbf{Encryption strength:} As the encryption method becomes more secure (e.g., adopting stronger substitution-permutation structures), even small statistical hints are suppressed, leaving virtually no redundancy for compression algorithms to exploit.
+    \end{itemize}
+
     \subsection{Question 16}
+
+    If Alice wants to send the more compressed private message to Bob, 
+    she should compress it before the encryption is made. The encryption will suppress
+    the redundancy in the message, making it less compressible.
 
 \section{Channel coding}
 
     \subsection{Question 17}
 
+    Here is the image generated (see figure \ref{fig:image}): 
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{Images/image.png}
+        \caption{Image generated}\label{fig:image}
+    \end{figure}
+
     \subsection{Question 18}
+
+    In order to encode a grayscale image using a fixed-length binary code,
+    we must determine the minimum number of bits required to represent all possible 
+    pixel intensity values.\\
+
+    \noindent
+    A grayscale image typically represent pixel intensities as integer values 
+    ranging from:
+    \begin{align*}
+        \text{Minimum } 0 \text{ to Maximum } 255
+    \end{align*}
+
+    \noindent
+    So there is 256 distinct values.\\
+
+    \noindent
+    To represent 256 distinct values in binary, we must choose the smallest integer $b$ such that:
+    \begin{align*}
+        2^b \geq 256
+    \end{align*}
+
+    \noindent
+    Solving this gives:
+    \begin{align*}
+        b = \lceil \log_2(256) \rceil = \lceil 8 \rceil = 8 \text{ bits}
+    \end{align*}
+
+    \noindent
+    This matches the required range [0,255] perfectly. 
+    Any representation using fewer than 8 bits (e.g., 7 bits → 128 values) 
+    would be insufficient to encode the full grayscale spectrum, leading to 
+    a loss of information and reduced image quality.
 
     \subsection{Question 19}
 
+    In our simulation, we modeled the transmission of a grayscale image through a noisy channel 
+    using a Binary Symmetric Channel (BSC) with a crossover probability $p=0.01$. 
+    This means that each bit of the transmitted image has a 1\% chance of being flipped 
+    (from 0 to 1 or vice versa) independently of the others.\\
+
+    \noindent
+    The resulting image (see figure \ref{fig:image_bsc}), after transmission through the BSC, exhibits noticeable noise artifacts:
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.4\textwidth]{Images/image.png}
+        \includegraphics[width=0.5\textwidth]{Images/image_bsc.png} 
+        \caption{Image after transmission through the BSC}\label{fig:image_bsc}
+    \end{figure}
+
+    \noindent
+    The noise introduced by the channel manifests as random speckling and abrupt variations in pixel intensity across the image. 
+    As a result, edges become less defined and fine structural details are partially lost or distorted. 
+    Overall, the image exhibits a noticeable reduction in clarity and visual fidelity when compared to the original.
+
     \subsection{Question 20}
+
+    The resulting image after adding some redundancy and passing through the BSC is shown in figure \ref{fig:image_bsc_redundancy}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.4\textwidth]{Images/image.png}
+        \includegraphics[width=0.5\textwidth]{Images/image_bsc_redundancy.png} 
+        \caption{Image after adding some redundancy and passing through the BSC}\label{fig:image_bsc_redundancy}
+    \end{figure}
+
+    \noindent
+    The noise noticed in this image is less visible than for the previous image.
+    This improvement is due to the Hamming code's ability to identify and correct 
+    single-bit errors, which are the most likely type of corruption under the given channel conditions. 
+    Although this approach increases the data size by a factor of $\frac{7}{4}$, the trade-off is 
+    justified by the substantial gain in visual quality and robustness.  
 
     \subsection{Question 21}
 
